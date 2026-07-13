@@ -1,0 +1,11 @@
+text,actual_sentiment,predicted_sentiment
+"I absolutely love this product it is amazing",positive,positive
+"This is the worst thing I have ever bought",negative,negative
+"It is okay nothing special",neutral,positive
+"The movie was decent but could be better",neutral,neutral
+"I hate this so much a complete waste of money",negative,negative
+"Fantastic experience would recommend to everyone",positive,positive
+"It works as expected no complaints",neutral,neutral
+"Terrible service and rude staff",negative,negative
+"Not bad for the price",neutral,positive
+"An incredible masterpiece absolutely brilliant",positive,positive

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SentimentSense</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f2f5; color: #1a1a2e; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .header {
+    width: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 24px 20px; text-align: center; color: #fff;
+  }
+  .header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+  .header p { font-size: 14px; opacity: 0.8; margin-top: 4px; }
+  .container { max-width: 800px; width: 100%; padding: 24px 20px; flex: 1; }
+  .card {
+    background: #fff; border-radius: 12px; padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 20px;
+  }
+  .card h2 { font-size: 16px; font-weight: 600; margin-bottom: 14px; color: #374151; }
+  textarea {
+    width: 100%; min-height: 100px; padding: 14px; font-size: 15px;
+    border: 2px solid #e5e7eb; border-radius: 8px; resize: vertical;
+    font-family: inherit; transition: border-color 0.2s;
+  }
+  textarea:focus { outline: none; border-color: #6366f1; }
+  .controls {
+    display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn {
+    padding: 10px 28px; border: none; border-radius: 8px; font-size: 15px;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+    background: #6366f1; color: #fff;
+  }
+  .btn:hover { background: #4f46e5; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn-outline {
+    background: transparent; color: #6366f1; border: 2px solid #6366f1;
+  }
+  .btn-outline:hover { background: #6366f1; color: #fff; }
+  .btn-outline.active { background: #6366f1; color: #fff; }
+  .examples {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;
+  }
+  .example-btn {
+    padding: 4px 12px; border: 1px solid #d1d5db; border-radius: 16px;
+    font-size: 12px; cursor: pointer; background: #f9fafb;
+    transition: all 0.2s; color: #374151;
+  }
+  .example-btn:hover { border-color: #6366f1; color: #6366f1; background: #eef2ff; }
+  .error-box {
+    background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px;
+    padding: 14px; color: #dc2626; font-size: 14px; margin-top: 14px;
+  }
+  .compare-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;
+  }
+  .model-card {
+    border: 1px solid #e5e7eb; border-radius: 10px; padding: 18px;
+    transition: all 0.2s;
+  }
+  .model-card.winner { border-color: #22c55e; background: #f0fdf4; }
+  .model-card h3 {
+    font-size: 14px; font-weight: 600; color: #6b7280;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
+  }
+  .sentiment-tag {
+    display: inline-block; padding: 4px 14px; border-radius: 20px;
+    font-size: 14px; font-weight: 600;
+  }
+  .sentiment-positive { background: #dcfce7; color: #166534; }
+  .sentiment-negative { background: #fce4ec; color: #c62828; }
+  .sentiment-neutral { background: #f3f4f6; color: #6b7280; }
+  .confidence-bar {
+    height: 8px; border-radius: 4px; background: #e5e7eb;
+    margin: 10px 0 6px; overflow: hidden;
+  }
+  .confidence-fill {
+    height: 100%; border-radius: 4px; transition: width 0.4s ease;
+  }
+  .conf-positive { background: #22c55e; }
+  .conf-negative { background: #ef4444; }
+  .conf-neutral { background: #9ca3af; }
+  .prob-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 4px 0; font-size: 13px; color: #4b5563;
+  }
+  .prob-row .label { font-weight: 500; }
+  .prob-row .mini-bar {
+    flex: 1; height: 6px; border-radius: 3px; background: #e5e7eb;
+    margin: 0 10px; overflow: hidden;
+  }
+  .prob-row .mini-fill { height: 100%; border-radius: 3px; }
+  .prob-row .val { font-family: monospace; color: #374151; }
+  .single-result { margin-top: 14px; }
+  .meta { font-size: 12px; color: #9ca3af; margin-top: 12px; text-align: center; }
+  .winner-badge {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    background: #22c55e; color: #fff; padding: 2px 10px; border-radius: 12px;
+    margin-left: 8px;
+  }
+  .switch-row {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .switch-label {
+    font-size: 13px; color: #6b7280; font-weight: 500;
+  }
+  .spinner {
+    display: inline-block; width: 18px; height: 18px;
+    border: 2px solid #e5e7eb; border-top-color: #6366f1;
+    border-radius: 50%; animation: spin 0.6s linear infinite;
+    vertical-align: middle; margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .btn-row { display: flex; gap: 8px; }
+  @media (max-width: 600px) {
+    .compare-grid { grid-template-columns: 1fr; }
+    .container { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>SentimentSense</h1>
+  <p>Compare Logistic Regression vs Linear SVM side by side</p>
+</div>
+<div class="container">
+  <div class="card">
+    <h2>Enter Text</h2>
+    <textarea id="textInput" placeholder="Type or paste a sentence here..."></textarea>
+    <div class="controls">
+      <div class="btn-row">
+        <button class="btn" id="predictBtn" onclick="predict()">Predict</button>
+        <button class="btn btn-outline active" id="compareBtn" onclick="toggleCompare()">Compare Both</button>
+      </div>
+      <div style="margin-left:auto;font-size:13px;color:#6b7280;">
+        <span id="modelLabel">Both models</span>
+      </div>
+    </div>
+    <div class="examples">
+      <span class="example-btn" onclick="setExample(this)">I absolutely love this product!</span>
+      <span class="example-btn" onclick="setExample(this)">This is terrible and disappointing</span>
+      <span class="example-btn" onclick="setExample(this)">The movie was okay, nothing special</span>
+      <span class="example-btn" onclick="setExample(this)">Not bad for the price</span>
+      <span class="example-btn" onclick="setExample(this)">😀😀😀</span>
+    </div>
+  </div>
+
+  <div id="resultSingle" class="card" style="display:none;"></div>
+  <div id="resultCompare" class="card" style="display:none;"></div>
+</div>
+
+<script>
+let compareMode = true;
+
+function toggleCompare() {
+  compareMode = !compareMode;
+  const btn = document.getElementById('compareBtn');
+  const label = document.getElementById('modelLabel');
+  btn.classList.toggle('active');
+  label.textContent = compareMode ? 'Both models' : 'SVM (best)';
+  const sr = document.getElementById('resultSingle');
+  const sc = document.getElementById('resultCompare');
+  sr.style.display = 'none';
+  sc.style.display = 'none';
+}
+
+function setExample(el) {
+  document.getElementById('textInput').value = el.textContent;
+  predict();
+}
+
+async function predict() {
+  const text = document.getElementById('textInput').value.trim();
+  if (!text) return;
+
+  const btn = document.getElementById('predictBtn');
+  const sr = document.getElementById('resultSingle');
+  const sc = document.getElementById('resultCompare');
+  sr.style.display = 'none';
+  sc.style.display = 'none';
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Predicting...';
+
+  try {
+    const body = JSON.stringify({ text, model: compareMode ? 'both' : 'svm' });
+    const res = await fetch('/predict', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+    const json = await res.json();
+
+    if (!json.success || json.detail) {
+      let msg = json.error?.message;
+      if (!msg) {
+        const d = json.detail;
+        if (typeof d === 'string') msg = d;
+        else if (Array.isArray(d)) msg = d[0]?.msg || 'Validation error';
+        else if (d?.message) msg = d.message;
+        else msg = 'Prediction failed';
+      }
+      showError(msg);
+      btn.disabled = false;
+      btn.textContent = 'Predict';
+      return;
+    }
+
+    if (json.data.comparison) {
+      renderCompare(json.data);
+    } else {
+      renderSingle(json.data);
+    }
+  } catch (e) {
+    showError('Network error. Is the server running?');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Predict';
+}
+
+function showError(msg) {
+  const sr = document.getElementById('resultSingle');
+  const sc = document.getElementById('resultCompare');
+  sr.style.display = 'none';
+  sc.style.display = 'none';
+  sr.innerHTML = `<div class="error-box">${msg}</div>`;
+  sr.style.display = 'block';
+  sr.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderSingle(data) {
+  const el = document.getElementById('resultSingle');
+  const sentimentClass = 'sentiment-' + data.sentiment;
+  const confClass = 'conf-' + data.sentiment;
+
+  el.innerHTML = `
+    <h2>Prediction</h2>
+    <div class="single-result">
+      <span class="sentiment-tag ${sentimentClass}">${capitalize(data.sentiment)}</span>
+      ${data.fallback ? '<span style="font-size:12px;color:#f59e0b;margin-left:8px;">⚠ No analyzable content</span>' : ''}
+      <div style="font-size:13px;color:#6b7280;margin-top:4px;">
+        Model: <strong>${data.model === 'svm' ? 'Linear SVM' : 'Logistic Regression'}</strong>
+        &middot; ${data.processing_time_ms}ms
+      </div>
+      <div class="confidence-bar" style="margin-top:12px;">
+        <div class="confidence-fill ${confClass}" style="width:${data.confidence * 100}%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:#6b7280;">
+        <span>Confidence</span><span>${(data.confidence * 100).toFixed(1)}%</span>
+      </div>
+      <div style="margin-top:12px;">${probRows(data.probabilities, data.sentiment)}</div>
+      ${data.truncated ? '<div style="color:#f59e0b;font-size:12px;margin-top:8px;">Text was truncated to 1000 characters</div>' : ''}
+    </div>
+  `;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderCompare(data) {
+  const el = document.getElementById('resultCompare');
+  const svm = data.results.find(r => r.model === 'svm');
+  const lr = data.results.find(r => r.model === 'lr');
+  if (!svm || !lr) return;
+
+  const better = svm.confidence >= lr.confidence ? 'svm' : 'lr';
+  const modelNames = { svm: 'Linear SVM', lr: 'Logistic Regression' };
+
+  el.innerHTML = `
+    <h2>Side-by-Side Comparison</h2>
+    <div style="font-size:13px;color:#6b7280;margin-bottom:4px;">"${data.text.length > 60 ? data.text.slice(0, 60) + '...' : data.text}"</div>
+    <div class="compare-grid">
+      ${modelCard('svm', svm, better === 'svm', modelNames)}
+      ${modelCard('lr', lr, better === 'lr', modelNames)}
+    </div>
+    ${data.truncated ? '<div style="color:#f59e0b;font-size:12px;margin-top:8px;">Text was truncated to 1000 characters</div>' : ''}
+    <div class="meta">${svm.fallback ? 'Both unable to analyze (emoji-only or no content)' : 'Winner is <strong>' + modelNames[better] + '</strong> &middot; based on confidence score'}</div>
+  `;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function modelCard(key, data, winner, names) {
+  const sentimentClass = 'sentiment-' + data.sentiment;
+  const confClass = 'conf-' + data.sentiment;
+  return `
+    <div class="model-card ${winner ? 'winner' : ''}">
+      <h3>${names[key]} ${winner ? '<span class="winner-badge">Winner</span>' : ''}</h3>
+      <span class="sentiment-tag ${sentimentClass}">${capitalize(data.sentiment)}</span>
+      ${data.fallback ? '<span style="font-size:11px;color:#f59e0b;margin-left:6px;">⚠ No content</span>' : ''}
+      <div style="font-size:12px;color:#9ca3af;margin-top:2px;">${data.processing_time_ms}ms</div>
+      <div class="confidence-bar">
+        <div class="confidence-fill ${confClass}" style="width:${data.confidence * 100}%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:#6b7280;">
+        <span>Confidence</span><span>${(data.confidence * 100).toFixed(1)}%</span>
+      </div>
+      <div style="margin-top:10px;">${probRows(data.probabilities, data.sentiment)}</div>
+    </div>
+  `;
+}
+
+function probRows(probs, winner) {
+  if (!probs) return '';
+  const labels = { negative: 'Negative', neutral: 'Neutral', positive: 'Positive' };
+  const colors = { negative: '#ef4444', neutral: '#9ca3af', positive: '#22c55e' };
+  return Object.entries(probs).map(([k, v]) => {
+    const pct = (v * 100).toFixed(1);
+    return `
+      <div class="prob-row">
+        <span class="label">${labels[k] || k}</span>
+        <div class="mini-bar"><div class="mini-fill" style="width:${pct}%;background:${colors[k] || '#6366f1'}"></div></div>
+        <span class="val">${pct}%</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+document.getElementById('textInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.ctrlKey) predict();
+});
+</script>
+</body>
+</html>
