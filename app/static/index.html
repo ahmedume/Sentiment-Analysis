@@ -3,146 +3,447 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SentimentSense</title>
+<title>SentimentSense — Model Comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-mono: 'Fira Code', monospace;
+    --surface: #0a0a0f;
+    --surface-alt: #12121a;
+    --surface-card: #1a1a26;
+    --surface-hover: #22223a;
+    --ink: #e8e8f0;
+    --ink-muted: #8888a0;
+    --ink-dim: #585870;
+    --accent: #6c5ce7;
+    --accent-glow: rgba(108, 92, 231, 0.15);
+    --green: #00d68f;
+    --green-bg: rgba(0, 214, 143, 0.1);
+    --red: #ff6b6b;
+    --red-bg: rgba(255, 107, 107, 0.1);
+    --amber: #ffa726;
+    --amber-bg: rgba(255, 167, 38, 0.1);
+    --radius: 8px;
+    --radius-sm: 6px;
+  }
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f0f2f5; color: #1a1a2e; min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center;
+    font-family: var(--font-display);
+    background: var(--surface);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.6;
   }
-  .header {
-    width: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    padding: 24px 20px; text-align: center; color: #fff;
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   }
-  .header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
-  .header p { font-size: 14px; opacity: 0.8; margin-top: 4px; }
-  .container { max-width: 800px; width: 100%; padding: 24px 20px; flex: 1; }
+
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10, 10, 15, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.02em;
+  }
+
+  .nav-brand svg { width: 22px; height: 22px; }
+
+  .nav-badge {
+    font-size: 11px;
+    font-weight: 500;
+    font-family: var(--font-mono);
+    color: var(--ink-muted);
+    background: var(--surface-alt);
+    padding: 2px 10px;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .container {
+    max-width: 880px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+    flex: 1;
+  }
+
+  .hero {
+    margin-bottom: 32px;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+
+  .hero p {
+    color: var(--ink-muted);
+    font-size: clamp(0.875rem, 1.2vw, 1rem);
+    max-width: 55ch;
+  }
+
   .card {
-    background: #fff; border-radius: 12px; padding: 24px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 20px;
+    background: var(--surface-card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
   }
-  .card h2 { font-size: 16px; font-weight: 600; margin-bottom: 14px; color: #374151; }
+
+  .card-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 12px;
+  }
+
   textarea {
-    width: 100%; min-height: 100px; padding: 14px; font-size: 15px;
-    border: 2px solid #e5e7eb; border-radius: 8px; resize: vertical;
-    font-family: inherit; transition: border-color 0.2s;
+    width: 100%;
+    min-height: 100px;
+    padding: 14px 16px;
+    font-size: 0.9375rem;
+    font-family: var(--font-display);
+    background: var(--surface-alt);
+    color: var(--ink);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-sm);
+    resize: vertical;
+    transition: border-color 0.2s;
+    line-height: 1.5;
   }
-  textarea:focus { outline: none; border-color: #6366f1; }
-  .controls {
-    display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap;
+
+  textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  textarea::placeholder { color: var(--ink-dim); }
+
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+    flex-wrap: wrap;
     align-items: center;
   }
+
   .btn {
-    padding: 10px 28px; border: none; border-radius: 8px; font-size: 15px;
-    font-weight: 600; cursor: pointer; transition: all 0.2s;
-    background: #6366f1; color: #fff;
+    padding: 9px 22px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: var(--font-display);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--accent);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
-  .btn:hover { background: #4f46e5; transform: translateY(-1px); }
-  .btn:active { transform: translateY(0); }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-  .btn-outline {
-    background: transparent; color: #6366f1; border: 2px solid #6366f1;
+
+  .btn:hover { background: #7c6ff0; }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink-muted);
+    border: 1px solid rgba(255,255,255,0.08);
   }
-  .btn-outline:hover { background: #6366f1; color: #fff; }
-  .btn-outline.active { background: #6366f1; color: #fff; }
+
+  .btn-ghost:hover { background: var(--surface-hover); color: var(--ink); }
+  .btn-ghost.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
+
+  .btn-icon {
+    padding: 9px 12px;
+    font-size: 0.8rem;
+  }
+
   .examples {
-    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 12px;
   }
+
   .example-btn {
-    padding: 4px 12px; border: 1px solid #d1d5db; border-radius: 16px;
-    font-size: 12px; cursor: pointer; background: #f9fafb;
-    transition: all 0.2s; color: #374151;
-  }
-  .example-btn:hover { border-color: #6366f1; color: #6366f1; background: #eef2ff; }
-  .error-box {
-    background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px;
-    padding: 14px; color: #dc2626; font-size: 14px; margin-top: 14px;
-  }
-  .compare-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;
-  }
-  .model-card {
-    border: 1px solid #e5e7eb; border-radius: 10px; padding: 18px;
+    padding: 3px 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-family: var(--font-display);
+    cursor: pointer;
+    background: var(--surface-alt);
+    color: var(--ink-muted);
     transition: all 0.2s;
   }
-  .model-card.winner { border-color: #22c55e; background: #f0fdf4; }
-  .model-card h3 {
-    font-size: 14px; font-weight: 600; color: #6b7280;
-    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
+
+  .example-btn:hover {
+    border-color: var(--accent);
+    color: var(--ink);
+    background: var(--accent-glow);
   }
+
+  .status-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  .dot-live { background: var(--green); box-shadow: 0 0 8px rgba(0,214,143,0.4); }
+  .dot-idle { background: var(--ink-dim); }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  @media (max-width: 640px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .container { padding: 20px 16px 48px; }
+    .nav { padding: 0 16px; }
+  }
+
+  .model-card {
+    background: var(--surface-alt);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: border-color 0.3s;
+    position: relative;
+  }
+
+  .model-card.winner {
+    border-color: var(--accent);
+    background: var(--accent-glow);
+  }
+
+  .model-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .model-name {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--ink-muted);
+  }
+
+  .model-badge {
+    font-size: 0.625rem;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 100px;
+    background: var(--accent);
+    color: #fff;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
   .sentiment-tag {
-    display: inline-block; padding: 4px 14px; border-radius: 20px;
-    font-size: 14px; font-weight: 600;
+    display: inline-block;
+    padding: 3px 14px;
+    border-radius: 100px;
+    font-size: 0.8125rem;
+    font-weight: 600;
   }
-  .sentiment-positive { background: #dcfce7; color: #166534; }
-  .sentiment-negative { background: #fce4ec; color: #c62828; }
-  .sentiment-neutral { background: #f3f4f6; color: #6b7280; }
-  .confidence-bar {
-    height: 8px; border-radius: 4px; background: #e5e7eb;
-    margin: 10px 0 6px; overflow: hidden;
+
+  .sentiment-positive { background: var(--green-bg); color: var(--green); }
+  .sentiment-negative { background: var(--red-bg); color: var(--red); }
+  .sentiment-neutral { background: var(--amber-bg); color: var(--amber); }
+
+  .conf-bar {
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.06);
+    margin: 12px 0 4px;
+    overflow: hidden;
   }
-  .confidence-fill {
-    height: 100%; border-radius: 4px; transition: width 0.4s ease;
+
+  .conf-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .conf-positive { background: #22c55e; }
-  .conf-negative { background: #ef4444; }
-  .conf-neutral { background: #9ca3af; }
+
+  .conf-positive { background: var(--green); }
+  .conf-negative { background: var(--red); }
+  .conf-neutral { background: var(--amber); }
+
+  .conf-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+
   .prob-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 4px 0; font-size: 13px; color: #4b5563;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+    font-size: 0.75rem;
   }
-  .prob-row .label { font-weight: 500; }
-  .prob-row .mini-bar {
-    flex: 1; height: 6px; border-radius: 3px; background: #e5e7eb;
-    margin: 0 10px; overflow: hidden;
+
+  .prob-label {
+    width: 56px;
+    color: var(--ink-muted);
+    font-weight: 500;
+    flex-shrink: 0;
   }
-  .prob-row .mini-fill { height: 100%; border-radius: 3px; }
-  .prob-row .val { font-family: monospace; color: #374151; }
-  .single-result { margin-top: 14px; }
-  .meta { font-size: 12px; color: #9ca3af; margin-top: 12px; text-align: center; }
-  .winner-badge {
-    display: inline-block; font-size: 11px; font-weight: 600;
-    background: #22c55e; color: #fff; padding: 2px 10px; border-radius: 12px;
+
+  .prob-track {
+    flex: 1;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.04);
+    overflow: hidden;
+  }
+
+  .prob-fill { height: 100%; border-radius: 2px; }
+
+  .prob-val {
+    width: 38px;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--ink-muted);
+  }
+
+  .meta-line {
+    font-size: 0.6875rem;
+    color: var(--ink-dim);
+    margin-top: 10px;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+
+  .meta-line strong { color: var(--ink-muted); font-weight: 500; }
+
+  .result-section {
+    animation: fadeSlide 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fallback-note {
+    font-size: 0.6875rem;
+    color: var(--amber);
     margin-left: 8px;
+    font-weight: 500;
   }
-  .switch-row {
-    display: flex; gap: 8px; align-items: center;
-  }
-  .switch-label {
-    font-size: 13px; color: #6b7280; font-weight: 500;
-  }
+
   .spinner {
-    display: inline-block; width: 18px; height: 18px;
-    border: 2px solid #e5e7eb; border-top-color: #6366f1;
-    border-radius: 50%; animation: spin 0.6s linear infinite;
-    vertical-align: middle; margin-right: 8px;
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.15);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
   }
+
   @keyframes spin { to { transform: rotate(360deg); } }
-  .btn-row { display: flex; gap: 8px; }
-  @media (max-width: 600px) {
-    .compare-grid { grid-template-columns: 1fr; }
-    .container { padding: 16px; }
+
+  .error-box {
+    background: var(--red-bg);
+    border: 1px solid rgba(255,107,107,0.2);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    color: var(--red);
+    font-size: 0.8125rem;
+    margin-top: 12px;
+  }
+
+  .model-timer {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--ink-dim);
+  }
+
+  .footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 0.75rem;
+    color: var(--ink-dim);
+    border-top: 1px solid rgba(255,255,255,0.04);
   }
 </style>
 </head>
 <body>
-<div class="header">
-  <h1>SentimentSense</h1>
-  <p>Compare Logistic Regression vs Linear SVM side by side</p>
-</div>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+    </svg>
+    SentimentSense
+  </div>
+  <span class="nav-badge"><span class="status-dot dot-live"></span>v1.0</span>
+</nav>
+
 <div class="container">
+  <div class="hero">
+    <h1>Compare sentiment models</h1>
+    <p>Type a sentence and see how Logistic Regression and Linear SVM predict its sentiment — side by side.</p>
+  </div>
+
   <div class="card">
-    <h2>Enter Text</h2>
-    <textarea id="textInput" placeholder="Type or paste a sentence here..."></textarea>
-    <div class="controls">
-      <div class="btn-row">
-        <button class="btn" id="predictBtn" onclick="predict()">Predict</button>
-        <button class="btn btn-outline active" id="compareBtn" onclick="toggleCompare()">Compare Both</button>
-      </div>
-      <div style="margin-left:auto;font-size:13px;color:#6b7280;">
-        <span id="modelLabel">Both models</span>
-      </div>
+    <div class="card-label">Input</div>
+    <textarea id="textInput" placeholder="Type a sentence..." spellcheck="false"></textarea>
+    <div class="toolbar">
+      <button class="btn" id="predictBtn" onclick="predict()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Predict
+      </button>
+      <button class="btn btn-ghost active" id="compareToggle" onclick="toggleCompare()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Compare
+      </button>
+      <span style="font-size:0.75rem;color:var(--ink-dim);margin-left:auto;" id="modelLabel">Both models</span>
     </div>
     <div class="examples">
       <span class="example-btn" onclick="setExample(this)">I absolutely love this product!</span>
@@ -153,8 +454,26 @@
     </div>
   </div>
 
-  <div id="resultSingle" class="card" style="display:none;"></div>
-  <div id="resultCompare" class="card" style="display:none;"></div>
+  <div id="resultCompare" style="display:none;" class="result-section">
+    <div class="card">
+      <div class="card-label">Prediction</div>
+      <div style="font-size:0.8125rem;color:var(--ink-muted);margin-bottom:4px;" id="compareQuote"></div>
+      <div class="grid-2" id="compareGrid"></div>
+      <div class="meta-line" id="compareMeta"></div>
+    </div>
+  </div>
+
+  <div id="resultSingle" style="display:none;" class="result-section">
+    <div class="card" id="singleCard"></div>
+  </div>
+
+  <div id="resultError" style="display:none;" class="result-section">
+    <div class="card"><div id="errorMsg" class="error-box"></div></div>
+  </div>
+</div>
+
+<div class="footer">
+  Linear SVM &middot; Logistic Regression &middot; Trained on 57,659 samples
 </div>
 
 <script>
@@ -162,14 +481,11 @@ let compareMode = true;
 
 function toggleCompare() {
   compareMode = !compareMode;
-  const btn = document.getElementById('compareBtn');
-  const label = document.getElementById('modelLabel');
-  btn.classList.toggle('active');
-  label.textContent = compareMode ? 'Both models' : 'SVM (best)';
-  const sr = document.getElementById('resultSingle');
-  const sc = document.getElementById('resultCompare');
-  sr.style.display = 'none';
-  sc.style.display = 'none';
+  document.getElementById('compareToggle').classList.toggle('active');
+  document.getElementById('modelLabel').textContent = compareMode ? 'Both models' : 'SVM only';
+  document.getElementById('resultSingle').style.display = 'none';
+  document.getElementById('resultCompare').style.display = 'none';
+  document.getElementById('resultError').style.display = 'none';
 }
 
 function setExample(el) {
@@ -182,16 +498,21 @@ async function predict() {
   if (!text) return;
 
   const btn = document.getElementById('predictBtn');
-  const sr = document.getElementById('resultSingle');
-  const sc = document.getElementById('resultCompare');
-  sr.style.display = 'none';
-  sc.style.display = 'none';
+  const rc = document.getElementById('resultCompare');
+  const rs = document.getElementById('resultSingle');
+  const re = document.getElementById('resultError');
+  rc.style.display = 'none';
+  rs.style.display = 'none';
+  re.style.display = 'none';
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Predicting...';
+  btn.innerHTML = '<span class="spinner"></span> Predicting';
 
   try {
-    const body = JSON.stringify({ text, model: compareMode ? 'both' : 'svm' });
-    const res = await fetch('/predict', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+    const res = await fetch('/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, model: compareMode ? 'both' : 'svm' })
+    });
     const json = await res.json();
 
     if (!json.success || json.detail) {
@@ -205,7 +526,7 @@ async function predict() {
       }
       showError(msg);
       btn.disabled = false;
-      btn.textContent = 'Predict';
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg> Predict';
       return;
     }
 
@@ -215,90 +536,86 @@ async function predict() {
       renderSingle(json.data);
     }
   } catch (e) {
-    showError('Network error. Is the server running?');
+    showError('Network error — is the server running?');
   }
 
   btn.disabled = false;
-  btn.textContent = 'Predict';
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg> Predict';
 }
 
 function showError(msg) {
-  const sr = document.getElementById('resultSingle');
-  const sc = document.getElementById('resultCompare');
-  sr.style.display = 'none';
-  sc.style.display = 'none';
-  sr.innerHTML = `<div class="error-box">${msg}</div>`;
-  sr.style.display = 'block';
-  sr.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('errorMsg').textContent = msg;
+  document.getElementById('resultError').style.display = 'block';
+  document.getElementById('resultError').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function renderSingle(data) {
-  const el = document.getElementById('resultSingle');
-  const sentimentClass = 'sentiment-' + data.sentiment;
-  const confClass = 'conf-' + data.sentiment;
-
+  const cls = 'sentiment-' + data.sentiment;
+  const ccf = 'conf-' + data.sentiment;
+  const el = document.getElementById('singleCard');
   el.innerHTML = `
-    <h2>Prediction</h2>
-    <div class="single-result">
-      <span class="sentiment-tag ${sentimentClass}">${capitalize(data.sentiment)}</span>
-      ${data.fallback ? '<span style="font-size:12px;color:#f59e0b;margin-left:8px;">⚠ No analyzable content</span>' : ''}
-      <div style="font-size:13px;color:#6b7280;margin-top:4px;">
-        Model: <strong>${data.model === 'svm' ? 'Linear SVM' : 'Logistic Regression'}</strong>
-        &middot; ${data.processing_time_ms}ms
-      </div>
-      <div class="confidence-bar" style="margin-top:12px;">
-        <div class="confidence-fill ${confClass}" style="width:${data.confidence * 100}%"></div>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;color:#6b7280;">
-        <span>Confidence</span><span>${(data.confidence * 100).toFixed(1)}%</span>
-      </div>
-      <div style="margin-top:12px;">${probRows(data.probabilities, data.sentiment)}</div>
-      ${data.truncated ? '<div style="color:#f59e0b;font-size:12px;margin-top:8px;">Text was truncated to 1000 characters</div>' : ''}
+    <div class="card-label">Prediction</div>
+    <div>
+      <span class="sentiment-tag ${cls}">${capitalize(data.sentiment)}</span>
+      ${data.fallback ? '<span class="fallback-note">No analyzable content</span>' : ''}
     </div>
+    <div style="margin-top:10px;">
+      <div class="conf-label"><span>Confidence</span><span>${(data.confidence * 100).toFixed(1)}%</span></div>
+      <div class="conf-bar"><div class="conf-fill ${ccf}" style="width:${data.confidence * 100}%"></div></div>
+    </div>
+    <div style="margin-top:6px;font-size:0.75rem;color:var(--ink-muted);display:flex;gap:16px;">
+      <span>Model: ${data.model === 'svm' ? 'Linear SVM' : 'Logistic Regression'}</span>
+      <span class="model-timer">${data.processing_time_ms}ms</span>
+    </div>
+    <div style="margin-top:10px;">${probRows(data.probabilities, data.sentiment)}</div>
+    ${data.truncated ? '<div style="font-size:0.75rem;color:var(--amber);margin-top:8px;">Text truncated to 1000 characters</div>' : ''}
   `;
-  el.style.display = 'block';
-  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('resultSingle').style.display = 'block';
+  document.getElementById('resultSingle').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function renderCompare(data) {
-  const el = document.getElementById('resultCompare');
   const svm = data.results.find(r => r.model === 'svm');
   const lr = data.results.find(r => r.model === 'lr');
   if (!svm || !lr) return;
 
   const better = svm.confidence >= lr.confidence ? 'svm' : 'lr';
-  const modelNames = { svm: 'Linear SVM', lr: 'Logistic Regression' };
+  const names = { svm: 'Linear SVM', lr: 'Logistic Regression' };
+  const quote = data.text.length > 65 ? data.text.slice(0, 65) + '...' : data.text;
+  document.getElementById('compareQuote').textContent = '"' + quote + '"';
 
-  el.innerHTML = `
-    <h2>Side-by-Side Comparison</h2>
-    <div style="font-size:13px;color:#6b7280;margin-bottom:4px;">"${data.text.length > 60 ? data.text.slice(0, 60) + '...' : data.text}"</div>
-    <div class="compare-grid">
-      ${modelCard('svm', svm, better === 'svm', modelNames)}
-      ${modelCard('lr', lr, better === 'lr', modelNames)}
-    </div>
-    ${data.truncated ? '<div style="color:#f59e0b;font-size:12px;margin-top:8px;">Text was truncated to 1000 characters</div>' : ''}
-    <div class="meta">${svm.fallback ? 'Both unable to analyze (emoji-only or no content)' : 'Winner is <strong>' + modelNames[better] + '</strong> &middot; based on confidence score'}</div>
-  `;
-  el.style.display = 'block';
-  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('compareGrid').innerHTML =
+    modelCard('svm', svm, better === 'svm', names) +
+    modelCard('lr', lr, better === 'lr', names);
+
+  if (svm.fallback) {
+    document.getElementById('compareMeta').textContent = 'No analyzable content — equal probabilities shown';
+  } else {
+    document.getElementById('compareMeta').innerHTML =
+      'Winner: <strong>' + names[better] + '</strong> (higher confidence)';
+  }
+
+  document.getElementById('resultCompare').style.display = 'block';
+  document.getElementById('resultCompare').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function modelCard(key, data, winner, names) {
-  const sentimentClass = 'sentiment-' + data.sentiment;
-  const confClass = 'conf-' + data.sentiment;
+  const sc = 'sentiment-' + data.sentiment;
+  const cf = 'conf-' + data.sentiment;
   return `
     <div class="model-card ${winner ? 'winner' : ''}">
-      <h3>${names[key]} ${winner ? '<span class="winner-badge">Winner</span>' : ''}</h3>
-      <span class="sentiment-tag ${sentimentClass}">${capitalize(data.sentiment)}</span>
-      ${data.fallback ? '<span style="font-size:11px;color:#f59e0b;margin-left:6px;">⚠ No content</span>' : ''}
-      <div style="font-size:12px;color:#9ca3af;margin-top:2px;">${data.processing_time_ms}ms</div>
-      <div class="confidence-bar">
-        <div class="confidence-fill ${confClass}" style="width:${data.confidence * 100}%"></div>
+      <div class="model-header">
+        <span class="model-name">${names[key]}</span>
+        ${winner ? '<span class="model-badge">Winner</span>' : ''}
       </div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;color:#6b7280;">
-        <span>Confidence</span><span>${(data.confidence * 100).toFixed(1)}%</span>
+      <span class="sentiment-tag ${sc}">${capitalize(data.sentiment)}</span>
+      ${data.fallback ? '<span class="fallback-note">No content</span>' : ''}
+      <div style="margin-top:10px;">
+        <div class="conf-label"><span>Confidence</span><span>${(data.confidence * 100).toFixed(1)}%</span></div>
+        <div class="conf-bar"><div class="conf-fill ${cf}" style="width:${data.confidence * 100}%"></div></div>
       </div>
       <div style="margin-top:10px;">${probRows(data.probabilities, data.sentiment)}</div>
+      <div class="model-timer" style="margin-top:6px;">${data.processing_time_ms}ms</div>
     </div>
   `;
 }
@@ -306,14 +623,14 @@ function modelCard(key, data, winner, names) {
 function probRows(probs, winner) {
   if (!probs) return '';
   const labels = { negative: 'Negative', neutral: 'Neutral', positive: 'Positive' };
-  const colors = { negative: '#ef4444', neutral: '#9ca3af', positive: '#22c55e' };
+  const colors = { negative: 'var(--red)', neutral: 'var(--amber)', positive: 'var(--green)' };
   return Object.entries(probs).map(([k, v]) => {
     const pct = (v * 100).toFixed(1);
     return `
       <div class="prob-row">
-        <span class="label">${labels[k] || k}</span>
-        <div class="mini-bar"><div class="mini-fill" style="width:${pct}%;background:${colors[k] || '#6366f1'}"></div></div>
-        <span class="val">${pct}%</span>
+        <span class="prob-label">${labels[k] || k}</span>
+        <div class="prob-track"><div class="prob-fill" style="width:${pct}%;background:${colors[k] || 'var(--accent)'}"></div></div>
+        <span class="prob-val">${pct}%</span>
       </div>
     `;
   }).join('');
