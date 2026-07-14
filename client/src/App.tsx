@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Github, Heart } from 'lucide-react'
+import { Menu, X, Github } from 'lucide-react'
 import Hero from './components/Hero'
 import About from './components/About'
 import Features from './components/Features'
@@ -12,8 +12,7 @@ function Footer() {
     <footer className="bg-black border-t border-white/5 py-8 sm:py-10 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-2 text-gray-500 text-xs sm:text-sm">
-          Built with <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" />
-          <span className="hidden sm:inline">— SentimentSense v1.0</span>
+          Built by Ahmed Umer
         </div>
         <a
           href="https://github.com/ahmedume/Sentiment-Analysis"

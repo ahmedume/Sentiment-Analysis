@@ -15,18 +15,20 @@ export default function Hero() {
   return (
     <section className="h-screen p-4 md:p-6">
       <div className="relative h-full w-full overflow-hidden rounded-2xl md:rounded-[2rem]">
-        <div
-          className="absolute inset-0 bg-gradient-to-br from-black via-black/95 to-[#0a0a0a]"
-        />
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4"
+            type="video/mp4"
+          />
+        </video>
 
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            background: `radial-gradient(circle at 30% 50%, rgba(222, 219, 200, 0.08) 0%, transparent 60%),
-                         radial-gradient(circle at 80% 20%, rgba(222, 219, 200, 0.05) 0%, transparent 50%),
-                         radial-gradient(circle at 50% 80%, rgba(100, 100, 80, 0.06) 0%, transparent 50%)`,
-          }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/90" />
 
         <div className="noise-overlay" />
 
