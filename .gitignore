@@ -4,6 +4,4 @@ __pycache__/
 .env
 data/raw/
 notebooks/.ipynb_checkpoints/
-../extras/
-start.md
-start.bat
+extras/
