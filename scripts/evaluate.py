@@ -1,14 +1,20 @@
+import sys
 import json
 import logging
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy.sparse import hstack as sparse_hstack
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score, f1_score,
     confusion_matrix, ConfusionMatrixDisplay, classification_report
 )
 import joblib
+
+from app.preprocess import extract_features
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -27,7 +33,7 @@ def main():
         return
 
     test_df = pd.read_csv(test_path)
-    X_test = test_df["cleaned_text"]
+    X_test_raw = test_df["cleaned_text"].tolist()
     y_test = test_df["label"]
 
     model_dir = MODELS_DIR / "baseline"
@@ -37,8 +43,16 @@ def main():
 
     model = joblib.load(model_dir / "model.pkl")
     vectorizer = joblib.load(model_dir / "vectorizer.pkl")
+    scaler = joblib.load(model_dir / "scaler.pkl")
 
-    y_pred = model.predict(vectorizer.transform(X_test))
+    tfidf = vectorizer.transform(X_test_raw)
+    feat_list = [extract_features(t) for t in X_test_raw]
+    import numpy as np
+    feats = np.array(feat_list)
+    feats_scaled = scaler.transform(feats)
+    X_test_vec = sparse_hstack([tfidf, feats_scaled])
+
+    y_pred = model.predict(X_test_vec)
 
     acc = accuracy_score(y_test, y_pred)
     prec = precision_score(y_test, y_pred, average="macro")

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Github } from 'lucide-react'
 import Hero from './components/Hero'
 import About from './components/About'
+import Comparison from './components/Comparison'
 import Features from './components/Features'
 import Demo from './components/Demo'
 import { checkHealth } from './lib/api'
@@ -107,6 +108,7 @@ export default function App() {
 
       <Hero />
       <About />
+      <Comparison />
       <Features />
       <Demo />
       <Footer />

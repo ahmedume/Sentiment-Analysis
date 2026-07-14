@@ -10,7 +10,7 @@ const features = [
     icon: Brain,
     title: 'Two-Model Comparison',
     num: '01',
-    items: ['Linear SVM (76.0% macro F1)', 'Logistic Regression (75.1% macro F1)', 'Side-by-side prediction mode'],
+    items: ['Linear SVM (87.1% macro F1)', 'Logistic Regression (86.8% macro F1)', 'Side-by-side prediction mode'],
   },
   {
     id: 'inference',

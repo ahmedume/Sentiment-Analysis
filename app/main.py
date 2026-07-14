@@ -1,10 +1,8 @@
 import logging
 import time
-from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 
 from app.config import HOST, PORT, MAX_TEXT_LENGTH
 from app.schemas import PredictRequest, PredictResponse, HealthResponse
@@ -24,16 +22,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-STATIC_DIR = Path(__file__).resolve().parent / "static"
-app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
-
 model_loader = ModelLoader()
 
 
 @app.get("/")
 async def root():
-    from fastapi.responses import FileResponse
-    return FileResponse(STATIC_DIR / "index.html")
+    return {"message": "Sentiment Analysis API — use /docs for Swagger UI"}
 
 
 @app.get("/health", response_model=HealthResponse)

@@ -2,15 +2,16 @@
 
 An end-to-end sentiment analysis system that collects, cleans, trains, and deploys machine learning models via a FastAPI-powered prediction API with an interactive React frontend.
 
-Classifies text into **Positive**, **Negative**, or **Neutral** sentiment using **Linear SVM** (best, 76.0% macro F1) and **Logistic Regression** (75.1% macro F1). Compare both models side-by-side in the browser.
+Classifies text into **Positive**, **Negative**, or **Neutral** sentiment using **Linear SVM** (best, 87.1% macro F1) and **Logistic Regression** (86.8% macro F1). Compare both models side-by-side in the browser.
 
 ---
 
 ## Features
 
-- **Two trained models** — Linear SVM and Logistic Regression, both ready for inference
+- **Two trained models** — Linear SVM (87.1% F1) and Logistic Regression (86.8% F1), both ready for inference
 - **Model comparison** — compare predictions from both models simultaneously via the API or frontend
 - **Interactive frontend** — React 18 web app with dark cinematic UI, confidence bars, per-class probabilities, and one-click example inputs
+- **Model comparison page** — dedicated section comparing SVM vs LR side-by-side with workings, before/after accuracy tables, per-class metrics, and training configuration
 - **Robust text preprocessing** — HTML stripping, URL removal, emoji-to-text conversion (`😀` → `grinning face`), special character filtering
 - **Graceful error handling** — empty text, emoji-only input, text truncation, unavailable models all handled explicitly
 - **Full training pipeline** — 5 scripts from data collection through evaluation, runnable end-to-end
@@ -73,14 +74,24 @@ Generates 7 visualizations in `reports/figures/`:
 
 ### 4. Training — `scripts/train.py`
 
-Applies stratified 70/15/15 train/validation/test split. Uses TF-IDF vectorization with 5,000 unigram+bigram features.
+Applies stratified 70/15/15 train/validation/test split. Uses TF-IDF vectorization with 15,000 unigram+bigram+trigram features, combined with engineered features (word count, avg word length, exclamation/question flags, negation ratio).
 
-**Validation performance (F1-macro):**
+**Before vs After (macro F1):**
+
+| Model | Before | After | Gain |
+|-------|:-----:|:-----:|:----:|
+| Linear SVM | 0.760 | **0.871** | +0.111 |
+| Logistic Regression | 0.751 | **0.868** | +0.117 |
+| Neutral class | 0.707 | **0.853** | +0.146 |
+
+Improvements came from: TF-IDF expansion (5K→15K, +trigrams), stemming + stopword removal, negation handling, class weighting, grid search CV, and engineered features (word count, punctuation, negation ratio).
+
+**Per-class metrics (best model):**
 
 | Model | F1-Score |
 |-------|----------|
-| Linear SVM | **0.760** |
-| Logistic Regression | 0.751 |
+| Linear SVM | **0.871** |
+| Logistic Regression | 0.868 |
 
 Both models and the vectorizer are saved to `models/baseline/`. The best model (SVM) is additionally saved as `model.pkl`.
 
@@ -92,10 +103,10 @@ Evaluates the best model on the held-out test set (8,649 samples).
 
 | Class | Precision | Recall | F1-Score | Support |
 |-------|-----------|--------|----------|---------|
-| Negative | 0.792 | 0.818 | 0.805 | 3,188 |
-| Neutral | 0.726 | 0.689 | 0.707 | 2,581 |
-| Positive | 0.766 | 0.773 | 0.770 | 2,880 |
-| **Macro avg** | **0.761** | **0.760** | **0.760** | **8,649** |
+| Negative | 0.889 | 0.891 | 0.890 | 3,181 |
+| Neutral | 0.863 | 0.843 | 0.853 | 2,573 |
+| Positive | 0.862 | 0.876 | 0.869 | 2,870 |
+| **Macro avg** | **0.871** | **0.870** | **0.871** | **8,624** |
 
 Outputs:
 - `reports/evaluation_report.json` — full metrics including per-class breakdown
@@ -300,6 +311,7 @@ client/
 │   ├── components/
 │   │   ├── Hero.tsx          # Fullscreen video hero with navbar
 │   │   ├── About.tsx         # About card with word-level highlight
+│   │   ├── Comparison.tsx    # Detailed model comparison with tables
 │   │   ├── Features.tsx      # Feature cards with 3D hover
 │   │   ├── Demo.tsx          # Prediction interface with results
 │   │   └── WordsPullUp.tsx   # Animated text reveal utility
