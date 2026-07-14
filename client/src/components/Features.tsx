@@ -5,6 +5,7 @@ import WordsPullUpMultiStyle from './WordsPullUpMultiStyle'
 
 const features = [
   {
+    id: 'comparison',
     icon: Brain,
     title: 'Two-Model Comparison',
     num: '01',
@@ -13,6 +14,7 @@ const features = [
     link: 'Compare models',
   },
   {
+    id: 'inference',
     icon: Cpu,
     title: 'Real-Time Inference',
     num: '02',
@@ -21,6 +23,7 @@ const features = [
     link: 'Try the API',
   },
   {
+    id: 'preprocessing',
     icon: Shield,
     title: 'Robust Preprocessing',
     num: '03',
@@ -29,6 +32,7 @@ const features = [
     link: 'View pipeline',
   },
   {
+    id: 'evaluation',
     icon: BarChart3,
     title: 'Full Evaluation Suite',
     num: '04',
@@ -39,6 +43,7 @@ const features = [
 ]
 
 function FeatureCard({
+  id,
   icon: Icon,
   title,
   num,
@@ -46,6 +51,7 @@ function FeatureCard({
   link,
   index,
 }: {
+  id: string
   icon: typeof Brain
   title: string
   num: string
@@ -58,22 +64,26 @@ function FeatureCard({
 
   return (
     <motion.div
+      id={id}
       ref={ref}
       initial={{ scale: 0.95, opacity: 0 }}
       animate={inView ? { scale: 1, opacity: 1 } : {}}
       transition={{ delay: index * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="bg-[#212121] rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 flex flex-col"
+      className="group bg-[#212121] rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 flex flex-col cursor-default"
     >
       <div className="flex items-start justify-between mb-3 sm:mb-4">
         <div className="bg-[#2a2a2a] rounded-lg p-2 sm:p-3">
           <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
         </div>
-        <span className="text-gray-500 text-xs sm:text-sm font-mono">{num}</span>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 text-primary/60 -rotate-45 transition-all duration-300 group-hover:rotate-0 group-hover:text-primary" />
+          <span className="text-gray-500 text-xs sm:text-sm font-mono">{num}</span>
+        </div>
       </div>
 
       <h3 className="text-primary text-sm sm:text-base md:text-lg font-medium mb-2 sm:mb-3">{title}</h3>
 
-      <div className="flex-1 space-y-1.5 sm:space-y-2 mb-3 sm:mb-4">
+      <div className="flex-1 space-y-1.5 sm:space-y-2">
         {items.map((item) => (
           <div key={item} className="flex items-start gap-2">
             <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary mt-0.5 shrink-0" />
@@ -81,11 +91,6 @@ function FeatureCard({
           </div>
         ))}
       </div>
-
-      <button className="group inline-flex items-center gap-1.5 text-primary text-[11px] sm:text-xs md:text-sm font-medium transition-all duration-300 hover:gap-2.5">
-        {link}
-        <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 transition-transform duration-300 group-hover:rotate-[-45deg]" />
-      </button>
     </motion.div>
   )
 }
@@ -95,7 +100,7 @@ export default function Features() {
   useInView(headerRef, { once: true, margin: '-100px' })
 
   return (
-    <section className="relative min-h-screen bg-black py-16 sm:py-20 md:py-28 px-4 sm:px-6 overflow-hidden">
+    <section id="features" className="relative min-h-screen bg-black py-16 sm:py-20 md:py-28 px-4 sm:px-6 overflow-hidden">
       <div className="bg-noise" />
 
       <div ref={headerRef} className="text-center mb-10 sm:mb-14 md:mb-18">
