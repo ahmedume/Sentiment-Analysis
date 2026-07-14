@@ -10,7 +10,7 @@ const features = [
     title: 'Two-Model Comparison',
     num: '01',
     desc: 'Train and compare Linear SVM vs Logistic Regression.',
-    items: ['Linear SVM — 76.0% macro F1', 'Logistic Regression — 75.1% macro F1', 'Side-by-side prediction mode'],
+    items: ['Linear SVM (76.0% macro F1)', 'Logistic Regression (75.1% macro F1)', 'Side-by-side prediction mode'],
     link: 'Compare models',
   },
   {

@@ -28,7 +28,7 @@ export default function About() {
 
         <div className="mt-6 sm:mt-8 md:mt-10 lg:mt-12 max-w-2xl mx-auto">
           <div className="text-primary text-xs sm:text-sm md:text-base leading-relaxed">
-            Built with scikit-learn and FastAPI, SentimentSense classifies text into Positive, Negative, or Neutral classes. Two models — Linear SVM and Logistic Regression — are trained on Twitter data and compared side by side, with the best model served through a RESTful API.
+            Built with scikit-learn and FastAPI, SentimentSense classifies text into Positive, Negative, or Neutral classes. Two models, Linear SVM and Logistic Regression, are trained on Twitter data and compared side by side, with the best model served through a RESTful API.
           </div>
         </div>
       </div>

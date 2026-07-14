@@ -171,7 +171,7 @@ export default function Demo() {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-8 sm:mb-10 md:mb-14"
         >
-          <p className="text-primary text-[10px] sm:text-xs tracking-widest uppercase mb-3">Live Demo</p>
+          <p className="text-primary text-[10px] sm:text-xs tracking-widest uppercase mb-3">Try it out</p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium leading-tight">
             Predict sentiment in real time
           </h2>
