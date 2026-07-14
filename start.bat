@@ -3,7 +3,7 @@ title SentimentSense
 cd /d "%~dp0"
 
 if not exist ".venv\Scripts\activate" (
-    echo Creating virtual environment...
+    echo Creating Python virtual environment...
     uv venv
 )
 
@@ -18,6 +18,21 @@ if not exist "models\baseline\model.pkl" (
     python scripts/evaluate.py
 )
 
-echo Starting server at http://localhost:8000
-uvicorn app.main:app --reload
+echo Installing frontend dependencies...
+cd client
+if not exist "node_modules" (
+    npm install
+)
+cd ..
+
+echo.
+echo === Starting servers ===
+echo Backend  : http://localhost:8000
+echo Frontend : http://localhost:5173
+echo.
+
+start "SentimentSense Backend" cmd /c "call .venv\Scripts\activate && uvicorn app.main:app --reload"
+start "SentimentSense Frontend" cmd /c "cd client && npm run dev"
+
+echo Both servers started. Close this window to stop.
 pause
