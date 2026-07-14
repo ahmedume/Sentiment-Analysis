@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
-import { useRef } from 'react'
 import WordsPullUp from './WordsPullUp'
 
 export default function Hero() {
@@ -106,14 +105,16 @@ Try it out
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 lg:gap-8 items-start">
             <div className="lg:col-span-8 overflow-hidden">
               <h1 className="relative">
-                <span
+                <motion.span
+                  whileHover={{ rotateX: 15, rotateY: -15, scale: 1.05 }}
+                  transition={{ type: 'spring', stiffness: 100, damping: 10 }}
                   className="font-medium leading-[0.88] tracking-[-0.06em] block text-left"
                   style={{ color: '#E1E0CC' }}
                 >
                   <span className="text-[13vw] sm:text-[11vw] md:text-[9vw] lg:text-[7.5vw] xl:text-[6.5vw] 2xl:text-[6vw] block break-words">
                     <WordsPullUp text="SentimentSense" delay={0.2} showAsterisk />
                   </span>
-                </span>
+                </motion.span>
               </h1>
             </div>
             <div className="lg:col-span-4 flex flex-col gap-3 sm:gap-4 pt-2 sm:pt-4">

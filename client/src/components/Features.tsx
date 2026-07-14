@@ -9,36 +9,28 @@ const features = [
     icon: Brain,
     title: 'Two-Model Comparison',
     num: '01',
-    desc: 'Train and compare Linear SVM vs Logistic Regression.',
     items: ['Linear SVM (76.0% macro F1)', 'Logistic Regression (75.1% macro F1)', 'Side-by-side prediction mode'],
-    link: 'Compare models',
   },
   {
     id: 'inference',
     icon: Cpu,
     title: 'Real-Time Inference',
     num: '02',
-    desc: 'Sub-millisecond predictions via FastAPI.',
     items: ['RESTful API with POST /predict', 'Singleton model loader', '0–1ms CPU inference'],
-    link: 'Try the API',
   },
   {
     id: 'preprocessing',
     icon: Shield,
     title: 'Robust Preprocessing',
     num: '03',
-    desc: 'Clean text before it reaches the model.',
     items: ['HTML & URL stripping', 'Emoji-to-text conversion', 'Special character filtering'],
-    link: 'View pipeline',
   },
   {
     id: 'evaluation',
     icon: BarChart3,
     title: 'Full Evaluation Suite',
     num: '04',
-    desc: 'Comprehensive metrics and visualizations.',
     items: ['Accuracy, Precision, Recall, F1', 'Confusion matrix heatmap', 'Class distribution & word clouds'],
-    link: 'See reports',
   },
 ]
 
@@ -48,7 +40,6 @@ function FeatureCard({
   title,
   num,
   items,
-  link,
   index,
 }: {
   id: string
@@ -56,7 +47,6 @@ function FeatureCard({
   title: string
   num: string
   items: string[]
-  link: string
   index: number
 }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -81,7 +71,11 @@ function FeatureCard({
         </div>
       </div>
 
-      <h3 className="text-primary text-sm sm:text-base md:text-lg font-medium mb-2 sm:mb-3">{title}</h3>
+      <motion.h3
+        whileHover={{ rotateX: 12, rotateY: -12, scale: 1.05 }}
+        transition={{ type: 'spring', stiffness: 100, damping: 10 }}
+        className="text-primary text-sm sm:text-base md:text-lg font-medium mb-2 sm:mb-3"
+      >{title}</motion.h3>
 
       <div className="flex-1 space-y-1.5 sm:space-y-2">
         {items.map((item) => (

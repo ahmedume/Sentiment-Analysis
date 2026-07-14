@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { useInView } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import WordsPullUpMultiStyle from './WordsPullUpMultiStyle'
 
 export default function About() {
@@ -9,11 +9,17 @@ export default function About() {
   return (
     <section id="about" className="bg-black py-20 sm:py-28 md:py-36 px-4 sm:px-6">
       <div ref={ref} className="bg-[#101010] rounded-2xl sm:rounded-3xl max-w-6xl mx-auto p-6 sm:p-10 md:p-16 lg:p-20 text-center">
-        <p className="text-primary text-[10px] sm:text-xs tracking-widest uppercase mb-4 sm:mb-6 md:mb-8">
+        <motion.p
+          whileHover={{ rotateX: 12, rotateY: -12 }}
+          transition={{ type: 'spring', stiffness: 100, damping: 10 }}
+          className="text-primary text-[10px] sm:text-xs tracking-widest uppercase mb-4 sm:mb-6 md:mb-8"
+        >
           Machine Learning
-        </p>
+        </motion.p>
 
-        <div
+        <motion.div
+          whileHover={{ rotateX: 15, rotateY: -15 }}
+          transition={{ type: 'spring', stiffness: 100, damping: 10 }}
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl max-w-3xl mx-auto"
           style={{ lineHeight: '0.95' }}
         >
@@ -23,8 +29,8 @@ export default function About() {
               { text: 'decodes emotions', className: 'font-serif italic' },
               { text: 'from text using machine learning models trained on thousands of labeled examples.', className: 'font-normal' },
             ]}
-          />
-        </div>
+            />
+          </motion.div>
 
         <div className="mt-6 sm:mt-8 md:mt-10 lg:mt-12 max-w-2xl mx-auto">
           <div className="text-primary text-xs sm:text-sm md:text-base leading-relaxed">
