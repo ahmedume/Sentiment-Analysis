@@ -1,5 +1,5 @@
 @echo off
-title SentimentSense
+title Sentiment Analysis
 cd /d "%~dp0"
 
 if not exist ".venv\Scripts\activate" (
@@ -31,8 +31,8 @@ echo Backend  : http://localhost:8000
 echo Frontend : http://localhost:5173
 echo.
 
-start "SentimentSense Backend" cmd /c "call .venv\Scripts\activate && uvicorn app.main:app --reload"
-start "SentimentSense Frontend" cmd /c "cd client && npm run dev"
+start "Sentiment Analysis Backend" cmd /c "call .venv\Scripts\activate && uvicorn app.main:app --reload"
+start "Sentiment Analysis Frontend" cmd /c "cd client && npm run dev"
 
 echo Both servers started. Close this window to stop.
 pause

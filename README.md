@@ -1,6 +1,6 @@
-# SentimentSense
+# Sentiment Analysis
 
-An end-to-end sentiment analysis system that collects, cleans, trains, and deploys machine learning models via a FastAPI-powered prediction API with an interactive comparison frontend.
+An end-to-end sentiment analysis system that collects, cleans, trains, and deploys machine learning models via a FastAPI-powered prediction API with an interactive React frontend.
 
 Classifies text into **Positive**, **Negative**, or **Neutral** sentiment using **Linear SVM** (best, 76.0% macro F1) and **Logistic Regression** (75.1% macro F1). Compare both models side-by-side in the browser.
 

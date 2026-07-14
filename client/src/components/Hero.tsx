@@ -116,7 +116,7 @@ Try it out
                   style={{ color: '#E1E0CC', transition: 'transform 0.15s ease-out' }}
                 >
                   <span className="text-[13vw] sm:text-[11vw] md:text-[9vw] lg:text-[7.5vw] xl:text-[6.5vw] 2xl:text-[6vw] block break-words">
-                    <WordsPullUp text="SentimentSense" delay={0.2} showAsterisk />
+                    <WordsPullUp text="Sentiment Analysis" delay={0.2} showAsterisk />
                   </span>
                 </div>
               </h1>

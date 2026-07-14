@@ -3,7 +3,7 @@ import { useInView } from 'framer-motion'
 import WordsPullUpMultiStyle from './WordsPullUpMultiStyle'
 import { useTilt } from '../lib/useTilt'
 
-const text = 'Built with scikit-learn and FastAPI, SentimentSense classifies text into Positive, Negative, or Neutral classes. Two models, Linear SVM and Logistic Regression, are trained on Twitter data and compared side by side, with the best model served through a RESTful API.'
+const text = 'Built with scikit-learn and FastAPI, this system classifies text into Positive, Negative, or Neutral classes. Two models, Linear SVM and Logistic Regression, are trained on Twitter data and compared side by side, with the best model served through a RESTful API.'
 
 const styles = `
 .word-highlight {
