@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Check, ArrowRight, BarChart3, Brain, Cpu, Shield } from 'lucide-react'
 import WordsPullUpMultiStyle from './WordsPullUpMultiStyle'
+import { useTilt } from '../lib/useTilt'
 
 const features = [
   {
@@ -51,6 +52,7 @@ function FeatureCard({
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-100px' })
+  const { ref: titleTilt, handleMouseMove, handleMouseLeave } = useTilt(15)
 
   return (
     <motion.div
@@ -71,11 +73,13 @@ function FeatureCard({
         </div>
       </div>
 
-      <motion.h3
-        whileHover={{ rotateX: 12, rotateY: -12, scale: 1.05 }}
-        transition={{ type: 'spring', stiffness: 100, damping: 10 }}
+      <h3
+        ref={titleTilt}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         className="text-primary text-sm sm:text-base md:text-lg font-medium mb-2 sm:mb-3"
-      >{title}</motion.h3>
+        style={{ transition: 'transform 0.12s ease-out' }}
+      >{title}</h3>
 
       <div className="flex-1 space-y-1.5 sm:space-y-2">
         {items.map((item) => (

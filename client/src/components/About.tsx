@@ -1,27 +1,33 @@
 import { useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { useInView } from 'framer-motion'
 import WordsPullUpMultiStyle from './WordsPullUpMultiStyle'
+import { useTilt } from '../lib/useTilt'
 
 export default function About() {
   const ref = useRef<HTMLDivElement>(null)
   useInView(ref, { once: true, margin: '-100px' })
+  const { ref: labelTilt, handleMouseMove: onLabelMove, handleMouseLeave: onLabelLeave } = useTilt(15)
+  const { ref: headingTilt, handleMouseMove: onHeadingMove, handleMouseLeave: onHeadingLeave } = useTilt(18)
 
   return (
     <section id="about" className="bg-black py-20 sm:py-28 md:py-36 px-4 sm:px-6">
       <div ref={ref} className="bg-[#101010] rounded-2xl sm:rounded-3xl max-w-6xl mx-auto p-6 sm:p-10 md:p-16 lg:p-20 text-center">
-        <motion.p
-          whileHover={{ rotateX: 12, rotateY: -12 }}
-          transition={{ type: 'spring', stiffness: 100, damping: 10 }}
+        <p
+          ref={labelTilt}
+          onMouseMove={onLabelMove}
+          onMouseLeave={onLabelLeave}
           className="text-primary text-[10px] sm:text-xs tracking-widest uppercase mb-4 sm:mb-6 md:mb-8"
+          style={{ transition: 'transform 0.12s ease-out' }}
         >
           Machine Learning
-        </motion.p>
+        </p>
 
-        <motion.div
-          whileHover={{ rotateX: 15, rotateY: -15 }}
-          transition={{ type: 'spring', stiffness: 100, damping: 10 }}
+        <div
+          ref={headingTilt}
+          onMouseMove={onHeadingMove}
+          onMouseLeave={onHeadingLeave}
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl max-w-3xl mx-auto"
-          style={{ lineHeight: '0.95' }}
+          style={{ lineHeight: '0.95', transition: 'transform 0.12s ease-out' }}
         >
           <WordsPullUpMultiStyle
             segments={[
@@ -30,7 +36,7 @@ export default function About() {
               { text: 'from text using machine learning models trained on thousands of labeled examples.', className: 'font-normal' },
             ]}
             />
-          </motion.div>
+          </div>
 
         <div className="mt-6 sm:mt-8 md:mt-10 lg:mt-12 max-w-2xl mx-auto">
           <div className="text-primary text-xs sm:text-sm md:text-base leading-relaxed">

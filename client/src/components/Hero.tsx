@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import WordsPullUp from './WordsPullUp'
+import { useTilt } from '../lib/useTilt'
 
 export default function Hero() {
+  const { ref: tiltRef, handleMouseMove, handleMouseLeave } = useTilt(20)
   return (
     <section className="h-screen p-4 md:p-6">
       <div className="relative h-full w-full overflow-hidden rounded-2xl md:rounded-[2rem]">
@@ -105,16 +107,17 @@ Try it out
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 lg:gap-8 items-start">
             <div className="lg:col-span-8 overflow-hidden">
               <h1 className="relative">
-                <motion.span
-                  whileHover={{ rotateX: 15, rotateY: -15, scale: 1.05 }}
-                  transition={{ type: 'spring', stiffness: 100, damping: 10 }}
+                <div
+                  ref={tiltRef}
+                  onMouseMove={handleMouseMove}
+                  onMouseLeave={handleMouseLeave}
                   className="font-medium leading-[0.88] tracking-[-0.06em] block text-left"
-                  style={{ color: '#E1E0CC' }}
+                  style={{ color: '#E1E0CC', transition: 'transform 0.15s ease-out' }}
                 >
                   <span className="text-[13vw] sm:text-[11vw] md:text-[9vw] lg:text-[7.5vw] xl:text-[6.5vw] 2xl:text-[6vw] block break-words">
                     <WordsPullUp text="SentimentSense" delay={0.2} showAsterisk />
                   </span>
-                </motion.span>
+                </div>
               </h1>
             </div>
             <div className="lg:col-span-4 flex flex-col gap-3 sm:gap-4 pt-2 sm:pt-4">
