@@ -380,7 +380,7 @@ Launches both the FastAPI backend and the React frontend automatically. Creates 
 
 ```bash
 # Clone and enter the project
-cd sentimentsense
+cd sentiment-analysis
 
 # Create and activate virtual environment
 uv venv
@@ -417,7 +417,7 @@ Open **http://localhost:5173** for the React frontend or **http://localhost:8000
 ## Project Structure
 
 ```
-sentimentsense/
+sentiment-analysis/
 ├── app/                           # FastAPI application
 │   ├── __init__.py
 │   ├── main.py                    # API routes (GET /, GET /health, POST /predict)
