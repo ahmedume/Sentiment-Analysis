@@ -73,6 +73,7 @@ export default function Hero() {
                   </div>
                 </div>
               </li>
+
               <li>
                 <a
                   href="#demo"
