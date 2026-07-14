@@ -10,7 +10,7 @@ Classifies text into **Positive**, **Negative**, or **Neutral** sentiment using 
 
 - **Two trained models** — Linear SVM and Logistic Regression, both ready for inference
 - **Model comparison** — compare predictions from both models simultaneously via the API or frontend
-- **Interactive frontend** — dark-themed UI with confidence bars, per-class probabilities, and one-click example inputs
+- **Interactive frontend** — React 18 web app with dark cinematic UI, confidence bars, per-class probabilities, and one-click example inputs
 - **Robust text preprocessing** — HTML stripping, URL removal, emoji-to-text conversion (`😀` → `grinning face`), special character filtering
 - **Graceful error handling** — empty text, emoji-only input, text truncation, unavailable models all handled explicitly
 - **Full training pipeline** — 5 scripts from data collection through evaluation, runnable end-to-end
@@ -281,7 +281,7 @@ curl -X POST http://localhost:8000/predict \
 
 ## Architecture
 
-### Application layer (`app/`)
+### Backend (`app/`)
 
 ```
 app/
@@ -289,9 +289,31 @@ app/
 ├── config.py          # Environment variables + CLASSES ordering
 ├── model_loader.py    # Singleton — loads SVM + LR + vectorizer once
 ├── preprocess.py      # clean_text() — shared with training pipeline
-├── schemas.py         # Pydantic models for request/response validation
-└── static/
-    └── index.html     # Vanilla JS frontend
+└── schemas.py         # Pydantic models for request/response validation
+```
+
+### Frontend (`client/`)
+
+```
+client/
+├── src/
+│   ├── components/
+│   │   ├── Hero.tsx          # Fullscreen video hero with navbar
+│   │   ├── About.tsx         # About card with word-level highlight
+│   │   ├── Features.tsx      # Feature cards with 3D hover
+│   │   ├── Demo.tsx          # Prediction interface with results
+│   │   └── WordsPullUp.tsx   # Animated text reveal utility
+│   ├── lib/
+│   │   ├── api.ts            # API client (/predict, /health)
+│   │   └── useTilt.ts        # Mouse-following 3D tilt hook
+│   ├── App.tsx               # Root layout, footer, mobile nav
+│   ├── main.tsx              # React entry point
+│   └── index.css             # Tailwind + global styles
+├── index.html                # Vite HTML entry
+├── vite.config.ts            # Dev server + proxy config
+├── tailwind.config.js        # Theme colors and fonts
+├── tsconfig.json
+└── package.json
 ```
 
 #### Model loading — singleton pattern
@@ -334,12 +356,13 @@ Both return identical response schemas with per-class probabilities summing to 1
 
 ### Frontend
 
-Built with vanilla HTML, CSS, and JavaScript — no frameworks. Served via FastAPI's `StaticFiles` mount at `/static`.
+Built with **React 18** + **TypeScript** + **Vite** + **Tailwind CSS 3** + **Framer Motion** + **Lucide React**. Served on port 5173, proxying `/predict` and `/health` to the FastAPI backend.
 
-- **Compare mode** (`model=both`) — two side-by-side result cards, winner highlighted with a badge
-- **Single mode** (`model=svm` or `model=lr`) — single-card result with confidence bar
-- **Example buttons** — 5 pre-configured test inputs for quick exploration
-- **Confidence visualization** — horizontal bars showing per-class probability distribution
+- **Hero section** — fullscreen video background with noise overlay, pill-shaped navbar, animated heading
+- **About section** — dark card with multi-style text and mouse-following word-by-word highlight
+- **Features section** — 4 animated cards with 3D hover effects on titles
+- **Demo section** — interactive prediction interface with example buttons, textarea, model selector (SVM/LR/Both), and styled result cards with confidence bars + BEST winner badge
+- **Mobile navigation** — burger menu with backdrop blur overlay
 
 ---
 
@@ -351,7 +374,7 @@ Built with vanilla HTML, CSS, and JavaScript — no frameworks. Served via FastA
 start.bat
 ```
 
-This automatically creates a virtual environment if missing, installs dependencies, downloads NLTK stopwords, runs the full pipeline if models aren't found, and starts the server.
+Launches both the FastAPI backend and the React frontend automatically. Creates the Python virtual environment, installs dependencies, trains models if missing, installs npm packages, and starts both servers.
 
 ### Manual setup
 
@@ -364,7 +387,7 @@ uv venv
 .venv\Scripts\activate       # Windows
 source .venv/bin/activate     # macOS / Linux
 
-# Install dependencies
+# Install Python dependencies
 uv pip install -r requirements.txt
 
 # Download NLTK stopwords
@@ -377,11 +400,17 @@ python scripts/eda.py
 python scripts/train.py
 python scripts/evaluate.py
 
-# Start the API server
+# Install frontend dependencies and start dev server
+cd client
+npm install
+npm run dev &
+
+# Start the API server (in a separate terminal)
+cd ..
 uvicorn app.main:app --reload
 ```
 
-Open **http://localhost:8000** for the frontend or **http://localhost:8000/docs** for the interactive Swagger documentation.
+Open **http://localhost:5173** for the React frontend or **http://localhost:8000/docs** for the interactive Swagger documentation.
 
 ---
 
@@ -395,9 +424,19 @@ sentimentsense/
 │   ├── config.py                  # Environment variables and CLASSES ordering
 │   ├── model_loader.py            # Singleton — loads SVM, LR, and vectorizer
 │   ├── preprocess.py              # Text cleaning (HTML, URLs, emojis, special chars)
-│   ├── schemas.py                 # Pydantic models (PredictRequest, PredictResponse, HealthResponse)
-│   └── static/
-│       └── index.html             # Interactive comparison frontend
+│   └── schemas.py                 # Pydantic models
+├── client/                        # React frontend (Vite + Tailwind + Framer Motion)
+│   ├── src/
+│   │   ├── components/            # Hero, About, Features, Demo, etc.
+│   │   ├── lib/                   # API client, useTilt hook
+│   │   ├── App.tsx                # Root layout
+│   │   ├── main.tsx               # Entry point
+│   │   └── index.css              # Global styles
+│   ├── index.html                 # Vite entry
+│   ├── vite.config.ts             # Dev server + proxy
+│   ├── tailwind.config.js         # Theme config
+│   ├── tsconfig.json
+│   └── package.json
 ├── scripts/                       # Training pipeline scripts
 │   ├── collect_data.py            # Load local CSVs, fallback to online sources
 │   ├── clean_data.py              # Deduplicate, clean, validate labels
